@@ -78,7 +78,12 @@ font-size: smaller;
   <h6> A web map application of UNESCO Heritage Sites in South East Asia.</h6>
 </div>
   <!-- DIV pour la carte -->
-  <div id="map" style="width:1260px; height:560px;"></div>
+  <div id="map" style="width:1260px; height:560px;">
+<img src="data/image48.png"
+   style="position:absolute; top:77%; left:86.5%; max-width:300px; max-height:100px; border:none; z-index:1;" />
+
+
+  </div>
   
   <script type="text/javascript">
 //view variable  
@@ -200,8 +205,6 @@ var select = new ol.interaction.Select({
   map.addInteraction(select);
 var overview = new ol.control.OverviewMap({
 	view: view_ov, 
-//	collapseLabel:'O', 
-//	label: 'O',
 	layers:[OSM]
 	});
 	map.addControl(overview);
