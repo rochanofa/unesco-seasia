@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>UNESCO Heritage List-SEA</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <meta name="description" content="UNESCO" />
+  <meta name="keywords" content="ol3, popup, overlay, jQuery, animation" />
+
+  <!-- Prevent image error on load with https -->
+	<script>
+		if (location.protocol == 'https:' && !/^localhost/.test(location.host)) {
+      location.href = window.location.href.replace(/^https:/,'http:');
+		}
+	</script>
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
+
+  <!-- Openlayers -->
+  <link rel="stylesheet" href="openlayers/ol.css" />
+  <script type="text/javascript" src="openlayers/ol.js"></script>
+  <script src="openlayers/polyfill.min.js"></script>
+  
+  <!-- ol-ext -->
+  <link rel="stylesheet" href="ol-ext/ol-ext.css" />
+  <script type="text/javascript" src="ol-ext/ol-ext.js"></script>
+	
+
+  <link rel="stylesheet" href="ol-ext/style.css" />
+   <style>
+   .header img {
+  float: left;
+  width: 50px;
+  height: 50px;
+}
+.header h2 {
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+.header h6 {
+  position: relative;
+  margin-block-end: 0em;
+  top:-7px;
+  left: 10px;
+	bottom:0px;
+}
+    .ol-scale-line{
+	 right:50%;
+	 left: auto;
+	 position:absolute;
+	 }
+	.ol-popup h1 {
+      font-size: 1em;
+      background-size: 2em;
+      padding-left: 3em;
+    }
+  </style>
+
+</head>
+<body >
+    <div class="header">
+  <img src="https://seeklogo.com/images/U/unesco-logo-EE9E97077A-seeklogo.com.png" alt="UNESCO" />
+  <h2>UNESCO Heritage Site - South East Asia</h2>
+  <h6> A web map portal that visualizes UNESCO Heritage Sites in South East Asia.</h6>
+</div>
+  <!-- DIV pour la carte -->
+  <div id="map" style="width:1260px; height:560px;"></div>
+  
+  <script type="text/javascript">
+//view variable  
+  var view = new ol.View({
+	projection: 'EPSG:4326',
+         center: [120.08719665842509, 5.2607124172067525],
+          zoom: 4,
+        });
+	var view_ov = new ol.View({
+		projection: 'EPSG:4326',
+        center: [120.08719665842509, 5.2607124172067525],
+          zoom: 14,
+        });
+		var base_maps = new ol.layer.Group({
+                'title': 'Base maps',
+                layers: [
+                        new ol.layer.Tile({
+                        title: 'OSM',
+                        type: 'base',
+                        visible: false,
+                        source: new ol.source.OSM()
+                    }),
+						new ol.layer.Tile({
+                        title: 'terrain-background',
+                        type: 'base',
+                        visible: true,
+                        source: new ol.source.Stamen({
+							layer: 'terrain',
+						})
+                    })
+                ]
+            });
+		   
+		var OSM = new ol.layer.Tile({
+            source: new ol.source.OSM(),
+			type: 'base',
+			title: 'OSM',
+          });
+// Style
+var cultureStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+         anchor: [0.5, 0.5],
+         scale: 0.75,
+          src: 'data/pagoda-2.png'
+        })
+      });
+var natureStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+         anchor: [0.5, 0.5],
+         scale: 0.75,
+          src: 'data/forest2.png'
+        })
+      });
+var mixStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+         anchor: [0.5, 0.5],
+         scale: 0.75,
+          src: 'data/bigcity.png'
+        })
+      });
+
+  // The map
+  var map = new ol.Map ({
+    target: 'map',
+    view: view,
+	interactions: ol.interaction.defaults({ altShiftDragRotate:false, pinchRotate:false }),
+	//layers: layers
+	//overlays: [popup]
+  });
+   map.addLayer(base_maps);
+  var scale = new ol.control.CanvasScaleLine({
+		units: 'metric',
+		});
+   map.addControl (scale);
+  // GeoJSON layer
+  var culture = new ol.source.Vector({
+    url: 'geojson/Cultural-Site.geojson',
+    projection: 'EPSG:4326',
+    format: new ol.format.GeoJSON(),
+    attributions: [ "&copy; <a href='http://whc.unesco.org/en/syndication/'>UNESCO</a>","&copy; Icons by <a href='https://mapicons.mapsmarker.com/'>Maps Icons Collection</a>" ],
+  });
+	
+  map.addLayer(new ol.layer.Vector({
+    name: 'Cultural-Site',
+    source: culture,
+	style: cultureStyle
+  }));
+	var nature = new ol.source.Vector({
+    url: 'geojson/Natural-Site.geojson',
+    projection: 'EPSG:4326',
+    format: new ol.format.GeoJSON(),
+    attributions: [ "&copy; <a href='http://whc.unesco.org/en/syndication/'>UNESCO</a>","&copy; Icons by <a href='https://mapicons.mapsmarker.com/'>Maps Icons Collection</a>" ],
+  });
+	
+  map.addLayer(new ol.layer.Vector({
+    name: 'Natural-Site',
+    source: nature,
+	style: natureStyle
+  }));
+  	var mixed = new ol.source.Vector({
+    url: 'geojson/Mixed-Site.geojson',
+    projection: 'EPSG:4326',
+    format: new ol.format.GeoJSON(),
+    attributions: [ "&copy; <a href='http://whc.unesco.org/en/syndication/'>UNESCO</a>","&copy; Icons by <a href='https://mapicons.mapsmarker.com/'>Maps Icons Collection</a>" ],
+  });
+	
+  map.addLayer(new ol.layer.Vector({
+    name: 'Mixed-Site',
+    source: mixed,
+	style: mixStyle
+  }));
+ 
+ //interaction
+var select = new ol.interaction.Select({
+    hitTolerance: 5,
+    multi: true,
+    condition: ol.events.condition.singleClick
+  });
+  map.addInteraction(select);
+var overview = new ol.control.OverviewMap({
+	view: view_ov, 
+//	collapseLabel:'O', 
+//	label: 'O',
+	layers:[OSM]
+	});
+	map.addControl(overview);
+	//toggle fullscreen
+	var full_sc = new ol.control.FullScreen({label:'F'});
+	map.addControl(full_sc);
+	//toggle zoomin+out
+	var zoom = new ol.control.Zoom({zoomInLabel:'+', zoomOutLabel:'-'});
+	map.addControl(zoom);
+	//slider zoom
+	var slider = new ol.control.ZoomSlider();
+	map.addControl(slider);
+	//zoom extent
+	var zoom_ex = new ol.control.ZoomToExtent({
+	extent:[
+              72.74043376467027, 29.475712488267963,
+               167.21952446007802, -15.66225446026747
+            ]
+			});
+	map.addControl(zoom_ex);
+  // Display popup
+ var popup = new ol.Overlay.PopupFeature({
+    popupClass: 'default anim',
+    select: select,
+    canFix: true,
+	showImage:true,
+	maxChar:1000,
+    template: {
+        title: 
+         //function to call the attribute to be displayed on popup
+          function(f) {
+            return f.get('name_en');
+          },
+        attributes: // [ 'category', 'country', 'area(ha)', 'Desc', 'image' ]
+        {
+          'category': { title: 'Category' },
+          'country_en': { title: 'Country' },
+          'area_hectares': { title: 'Area(ha)' },
+          'short_description_en': { title: 'Desc' },
+		  'img': { title: 'Image' },
+        }
+    }
+  });
+  map.addOverlay (popup);
+  
+  var layerSwitcher = new ol.control.LayerSwitcher({
+    activationMode: 'click',
+    startActive: true,
+	tipLabel: 'Layers', // Optional label for button
+    groupSelectStyle: 'group', // Can be 'children' [default], 'group' or 'none'
+    collapseTipLabel: 'Collapse layers',
+  });
+  map.addControl(layerSwitcher);
+  
+    // Select control
+// Select  interaction
+  var selecti = new ol.interaction.Select({
+    hitTolerance: 5,
+    condition: ol.events.condition.singleClick
+  });
+  map.addInteraction(selecti);
+  // Select feature when click on the reference index
+  selecti.on('select', function(e) {
+    var f = e.selected[0];
+    if (f) {
+      var prop = f.getProperties();
+      var ul = $('.options ul').html('');
+      for (var p in prop) if (p!=='geometry') {
+        $('<li>').text(p+': '+prop[p]).appendTo(ul);
+      }
+    }
+  });
+  var selectCtrl = new ol.control.Select({
+    // target: $(".options").get(0),
+    source: [culture, nature, mixed],
+    property: $(".options select").val()
+  });
+  map.addControl (selectCtrl);
+  selectCtrl.on('select', function(e) {
+    console.log(e);
+    selecti.getFeatures().clear();
+    for (var i=0, f; f=e.features[i]; i++) {
+      selecti.getFeatures().push(f);
+    }
+  });
+
+ 
+
+  </script>
+</body>
+</html>
