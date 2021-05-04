@@ -8,12 +8,6 @@
   <meta name="description" content="UNESCO" />
   <meta name="keywords" content="ol3, popup, overlay, jQuery, animation" />
 
-  <!-- Prevent image error on load with https -->
-	<<!-- script>
-		if (location.protocol == 'https:' && !/^localhost/.test(location.host)) {
-      location.href = window.location.href.replace(/^https:/,'http:');
-		}
-	</script> -->
 
   <!-- jQuery -->
   <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
@@ -60,7 +54,7 @@
   </style>
 
 </head>
-<body >
+<body>
     <div class="header">
   <img src="https://seeklogo.com/images/U/unesco-logo-EE9E97077A-seeklogo.com.png" alt="UNESCO" />
   <h2>UNESCO Heritage Site - South East Asia</h2>
@@ -143,7 +137,7 @@ var mixStyle = new ol.style.Style({
 		});
    map.addControl (scale);
   // GeoJSON layer
- /*var culture = new ol.source.Vector({
+ var culture = new ol.source.Vector({
     url: 'geojson/Cultural-Site.geojson',
     projection: 'EPSG:4326',
     format: new ol.format.GeoJSON(),
@@ -178,7 +172,7 @@ var mixStyle = new ol.style.Style({
     name: 'Mixed-Site',
     source: mixed,
 	style: mixStyle
-  })); */
+  })); 
  
  //interaction
 var select = new ol.interaction.Select({
