@@ -11,6 +11,15 @@
 
   <!-- jQuery -->
   <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
+  
+<!--   Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$("#myModal").modal('show');
+	});
+</script>
 
   <!-- Openlayers -->
   <link rel="stylesheet" href="openlayers/ol.css" />
@@ -20,8 +29,6 @@
   <!-- ol-ext -->
   <link rel="stylesheet" href="ol-ext/ol-ext.css" />
   <script type="text/javascript" src="ol-ext/ol-ext.js"></script>
-	
-
   <link rel="stylesheet" href="ol-ext/style.css" />
    <style>
    .header img {
@@ -76,6 +83,23 @@ font-size: smaller;
   <img src="https://seeklogo.com/images/U/unesco-logo-EE9E97077A-seeklogo.com.png" alt="UNESCO" />
   <h2>UNESCO Heritage Site - South East Asia</h2>
   <h6> A web map application of UNESCO Heritage Sites in South East Asia.</h6>
+</div>
+
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Welcome to UNESCO Heritage Sites - SE Asia web-map app!</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+				<img class="capimg" src="https://aseanup.com/wp-content/uploads/2015/03/UNESCO-World-Heritage-Sites-Southeast-Asia.jpg" width="300" height="100" /> 
+				<p style="text-align:justify">World Heritage Sites are designated by UNESCO for having cultural, historical, scientific or other form of significance. </p>
+            <p style="text-align:justify">The sites are intended for practical conservation for posterity, which otherwise would be subject to risk from human or animal trespassing, unmonitored, uncontrolled or unrestricted access, or threat from local administrative negligence.</p>
+			<p> More info: <a href="https://whc.unesco.org/en/list/">WHC website</a> </p>
+			</div>
+        </div>
+    </div>
 </div>
   <!-- DIV pour la carte -->
   <div id="map" style="width:1260px; height:560px;">
