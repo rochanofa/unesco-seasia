@@ -41,6 +41,27 @@
   left: 10px;
 	bottom:0px;
 }
+ .ol-search ul {
+			color: #333;
+			font-size:0.85em;
+			max-width: 21em;
+			left:40%;
+		}
+		.ol-search ul i {
+			display: block;
+			color: #333;
+			font-size:0.85em;
+						left:0%;
+		}
+		.info {
+			display: inline-block;
+			width: 100%;
+		}
+		.info a img {
+			height: 100px;
+			margin-right: .5em;
+			float: left;
+		}
     .ol-scale-line{
 	 right:50%;
 	 left: auto;
@@ -58,7 +79,7 @@
     <div class="header">
   <img src="https://seeklogo.com/images/U/unesco-logo-EE9E97077A-seeklogo.com.png" alt="UNESCO" />
   <h2>UNESCO Heritage Site - South East Asia</h2>
-  <h6> A web map portal that visualizes UNESCO Heritage Sites in South East Asia.</h6>
+  <h6> A web map application of UNESCO Heritage Sites in South East Asia.</h6>
 </div>
   <!-- DIV pour la carte -->
   <div id="map" style="width:1260px; height:560px;"></div>
@@ -238,9 +259,58 @@ var overview = new ol.control.OverviewMap({
     collapseTipLabel: 'Collapse layers',
   });
   map.addControl(layerSwitcher);
+  //Search nominaatim
+  var search = new ol.control.SearchNominatim (
+		{	reverse: true,
+			position: true	// Search, with priority to geo position
+		});
+	map.addControl (search);
+	
+	// Select feature when click on the reference index
+	search.on('select', function(e)
+		{	// console.log(e);
+			sLayer.getSource().clear();
+			// Check if we get a geojson to describe the search
+			if (e.search.geojson) {
+				var format = new ol.format.GeoJSON();
+				var f = format.readFeature(e.search.geojson, { dataProjection: "EPSG:4326", featureProjection: map.getView().getProjection() });
+				sLayer.getSource().addFeature(f);
+				var sview = map.getView();
+				var resolution = view.getResolutionForExtent(f.getGeometry().getExtent(), map.getSize());
+				var szoom = view.getZoomForResolution(resolution);
+				var center = ol.extent.getCenter(f.getGeometry().getExtent());
+				// redraw before zoom
+				setTimeout(function(){
+						sview.animate({
+						center: center,
+						zoom: Math.min (zoom, 16)
+					});
+				}, 100);
+			}
+			else {
+				map.getView().animate({
+					center:e.coordinate,
+					zoom: Math.max (map.getView().getZoom(),16)
+				});
+			}
+		});
+  //Legend
+ var legend = new ol.legend.Legend({
+    title: 'Legend',
+    style: cultureStyle
+  })
+  var legendCtrl = new ol.control.Legend({ 
+    legend: legend,
+    collapsed: false
+  });
+  map.addControl(legendCtrl);
+  legend.on('select', function(e) {
+    if (e.index >= 0) console.log((e.symbol ? 'You click on symbol: ':'You click on row: ')+e.item.get('title')+' ('+e.index+')');
+    else console.log('You click on the title: '+e.item.get('title'));
+  });
+  legend.addItem({ title: 'Car placemark', feature: culture });
   
-    // Select control
-// Select  interaction
+ // Select  interaction
   var selecti = new ol.interaction.Select({
     hitTolerance: 5,
     condition: ol.events.condition.singleClick
