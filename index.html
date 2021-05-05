@@ -287,22 +287,7 @@ var overview = new ol.control.OverviewMap({
     collapseTipLabel: 'Collapse layers',
   });
   map.addControl(layerSwitcher);
- 
-  //Legend
-/* var legend = new ol.legend.Legend({
-    title: 'Legend',
-    style: cultureStyle
-  })
-  var legendCtrl = new ol.control.Legend({ 
-    legend: legend,
-    collapsed: false
-  });
-  map.addControl(legendCtrl);
-  legend.on('select', function(e) {
-    if (e.index >= 0) console.log((e.symbol ? 'You click on symbol: ':'You click on row: ')+e.item.get('title')+' ('+e.index+')');
-    else console.log('You click on the title: '+e.item.get('title'));
-  });
-  legend.addItem({ title: 'Car placemark', feature: culture });*/
+
   
  // Select  interaction
     var selecti = new ol.interaction.Select({
@@ -336,6 +321,28 @@ var overview = new ol.control.OverviewMap({
   });
   
   //search nominatim-geocoding
+ var sLayer = new ol.layer.Vector({
+		source: new ol.source.Vector(),
+		style: new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 5,
+				stroke: new ol.style.Stroke ({
+					color: 'rgb(255,165,0)',
+					width: 3
+				}),
+				fill: new ol.style.Fill({
+					color: 'rgba(255,165,0,.3)'
+				})
+			}),
+			stroke: new ol.style.Stroke ({
+				color: 'rgb(255,165,0)',
+				width: 3
+			}),
+			fill: new ol.style.Fill({
+				color: 'rgba(255,165,0,.3)'
+			})
+		})
+	});
  var search = new ol.control.SearchNominatim (
 		{	reverse: true,
 			position: true	// Search, with priority to geo position
